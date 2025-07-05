@@ -1,12 +1,12 @@
 # Introduction
 
-These Open Computers (OC) scripts will automatically tier-up, stat-up, and spread (duplicate) IC2 crops for you. OC is a very powerful yet complicated mod using custom scripts, but fear not. This guide walks through every step of the process, from building the crop bot to debugging and troubleshooting. No prior knowledege of OC is necessary.
+These OpenComputers (OC) scripts automatically tier-up, stat-up, and spread (duplicate) IC2 crops for you. This guide walks through every step of the process, from building the crop bot to debugging and troubleshooting. No prior knowledege of OC is necessary.
 
 The general idea is that the crop bot runs one of three executable programs while regularly checking and maintaining a **working farm** of crops (placing crop sticks, removing weeds, etc.). When necessary, it will move crops around entirely on its own through the use of a Transvector Dislocator. The ultimate goal of the crop bot is to populate a **storage farm** full of high-stat crops to be used elsewhere for harvesting. There is no player intervention beyond supplying the crop bot with crop sticks, activating the crop bot, and collecting the final products.
 
 # Bare Minimum Components
 
-Obtaining these components will require access to EV circuits and epoxid (mid-late HV). It is possible to save some resources by not including the internet card, but that will require manually copying and pasting the code from GitHub which is NOT recommended for multiple reasons. Both inventory upgrades are necessary. Do NOT mix up central processing unit (CPU) with accelerated processing unit (APU).
+The following requires EV circuits and epoxid (mid-late HV). It is possible to save some resources by not including the internet card, but that will require manually copying and pasting the code from GitHub which is NOT recommended for multiple reasons. Both inventory upgrades are necessary. Do not mix up central processing unit (CPU) with accelerated processing unit (APU).
 
 - OC Electronics Assembler
 - OC Charger
@@ -36,10 +36,10 @@ Lastly, you need a Transvector Binder and Transvector Dislocator which requires 
 1) Insert the computer case into the OC Electronics Assembler which can be powered directly by any GT cable.
 2) Shift-click all the components into the computer case except the OpenOS floppy disk.
 3) Click assemble and wait until it completes (~3 min).
-4) Rename the robot in an anvil.
+4) Rename the robot in an anvil (optional).
 5) Place the robot on the OC Charger which can also be powered directly by any GT cable. The OC Charger must be activated using some form of redstone such as a lever.
 6) Insert the OpenOS floppy disk into the disk slot of the robot and press the power button.
-7) Follow the commands on screen 'install' --> 'Y' --> 'Y' (Note: The OpenOS floppy disk is no longer needed in the robot afterwards).
+7) Follow the commands on screen 'install' --> 'Y' --> 'Y' (The OpenOS floppy disk is no longer needed in the robot afterwards).
 8) Install the required scripts by copying this line of code into the robot (middle-click to paste).
 
         wget https://raw.githubusercontent.com/DylanTaylor1/GTNH-CropAutomation/main/setup.lua && setup
@@ -48,7 +48,7 @@ Lastly, you need a Transvector Binder and Transvector Dislocator which requires 
 
         edit config.lua
 
-10) Place the Spade and Transvector Binder into the last and second to last slot of the robot, respectively. Crop sticks will go in the third, but it is not required to put them in yourself. An axe or mattock can also be placed into the tool slot of the robot to speed up destroying crops (optional). See image below.
+10) Place the Spade and Transvector Binder into the last and second to last slot of the robot, respectively. Crop sticks will go in the third, but it is not required to put them in yourself. An axe or mattock can also be placed into the tool slot of the robot to speed up destroying crops (optional). See the image below.
 
 ![Robot Inventory](media/Robot_Inventory.png?)
 
