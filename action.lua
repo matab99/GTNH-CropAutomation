@@ -96,10 +96,17 @@ local function placeCropStick(count)
 end
 
 
+local function pulseDown()
+    redstone.setOutput(sides.down, 15)
+    os.sleep(0.1)
+    redstone.setOutput(sides.down, 0)
+end
+
+
 local function deweed()
     local selectedSlot = robot.select()
 
-    if config.keepDrops and fullInventory() then
+    if fullInventory() then
         gps.save()
         dumpInventory()
         gps.resume()
@@ -108,20 +115,22 @@ local function deweed()
     robot.select(robot.inventorySize() + config.spadeSlot)
     inventory_controller.equip()
     robot.useDown()
-
-    if config.keepDrops then
-        robot.suckDown()
-    end
+    robot.suckDown()
 
     inventory_controller.equip()
     robot.select(selectedSlot)
 end
 
 
-local function pulseDown()
-    redstone.setOutput(sides.down, 15)
-    os.sleep(0.1)
-    redstone.setOutput(sides.down, 0)
+local function harvest()
+    if fullInventory() then
+        gps.save()
+        dumpInventory()
+        gps.resume()
+    end
+    
+    robot.swingDown()
+    robot.suckDown()
 end
 
 
@@ -162,9 +171,7 @@ local function transplant(src, dest)
     inventory_controller.equip()
     gps.go(config.relayFarmlandPos)
     robot.swingDown()
-    if config.KeepDrops then
-        robot.suckDown()
-    end
+    robot.suckDown()
 
     gps.resume()
     robot.select(selectedSlot)
@@ -189,9 +196,7 @@ function cleanUp()
         end
 
         -- Pickup
-        if config.KeepDrops then
-            robot.suckDown()
-        end
+        robot.suckDown()
     end
     events.setNeedCleanup(false)
     restockAll()
@@ -254,8 +259,9 @@ return {
     dumpInventory = dumpInventory,
     restockAll = restockAll,
     placeCropStick = placeCropStick,
-    deweed = deweed,
     pulseDown = pulseDown,
+    deweed = deweed,
+    harvest = harvest,
     transplant = transplant,
     cleanUp = cleanUp,
     initWork = initWork

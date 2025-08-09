@@ -10,7 +10,7 @@ local lowestTierSlot
 local lowestStat
 local lowestStatSlot
 
--- =================== MINOR FUNCTIONS ======================
+-- ===================== FUNCTIONS ======================
 
 local function updateLowest()
     local farm = database.getFarm()

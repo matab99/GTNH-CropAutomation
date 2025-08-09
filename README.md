@@ -4,6 +4,8 @@ These OpenComputers (OC) scripts automatically tier-up, stat-up, and spread (dup
 
 The general idea is that the crop bot runs one of three executable programs while regularly checking and maintaining a **working farm** of crops (placing crop sticks, removing weeds, etc.). When necessary, it will move crops around entirely on its own through the use of a Transvector Dislocator. The ultimate goal of the crop bot is to populate a **storage farm** full of high-stat crops to be used elsewhere for harvesting. There is no player intervention beyond supplying the crop bot with crop sticks, activating the crop bot, and collecting the final products.
 
+Is this even worth it? Consider, for example, a field of 1/1/1 stickreed and another field of 21/31/0 stickreed. Keep every other variable constant and the high-stat field produces sticky resin **8x faster** than the low-stat one. That is a very significant difference for the time it takes to build and use the crop bot.
+
 # Bare Minimum Components
 
 The following requires EV circuits and epoxid (mid-late HV). It is possible to save some resources by not including the internet card, but that will require manually copying and pasting the code from GitHub which is NOT recommended for multiple reasons. Both inventory upgrades are necessary. Do not mix up central processing unit (CPU) with accelerated processing unit (APU).
@@ -88,37 +90,29 @@ The third program **autoSpread** automatically spreads (duplicates) the target c
 
     autoSpread
 
+(Optional) Disable useStorageFarm in the config to harvest child crops on the working farm during autoSpread instead of moving them to the storage farm. They are only harvested once they reach their maximum growth stage - 1 for the best chances at dropping seeds. Everything is deposited in the storage chest, including other types of seeds and those that do not meet the autoSpreadThreshold. This setting also causes autoSpread to run until the maximum breeding round is reached which means a single iteration can collect hundreds of seeds. It is recommended to use a full-block ME interface as the storage chest if using this method.
+
 Lastly, these programs can be chained together which may be helpful if you have brand new crops (ie. 1/1/1 spruce saplings) and want them to immediately start spreading once they are fully statted-up. Note that keepMutations in the config should probably be set to false (default) otherwise the storage farm will be overwritten once the second program begins. To run autoSpread after autoStat, simply enter:
 
     autoStat && autoSpread
 
-Turn off the OC Charger to **pause** the robot during any of these programs. The robot will not resume until fully charged. Press 'Q' while in the interface of the robot to terminate the program immediately, or press 'C' to terminate the program immediately AND cleanup. One last reminder that changing anything in the config requires you to restart your robot.
+Turn off the OC Charger to **pause** the robot during any of these programs. The robot will not resume until fully charged. Press 'Q' while in the interface of the robot to terminate the program immediately, or press 'C' to terminate the program immediately AND cleanup.
 
 # Troubleshooting
 
-1) The Transvector Dislocator is randomly moved to somewhere on the working farm
+1) **The Transvector Dislocator is randomly moved to somewhere on the working farm.** _Cover your water sources. Otherwise the order of the transvector binder will get messed up and teleport the dislocator instead of a crop._
 
-_Solution: Cover your water sources. Otherwise the order of the transvector binder will get messed up and teleport the dislocator instead of a crop._
+2) **The Robot is randomly moved to somewhere on the working farm.** _Check the orientation of the transvector dislocator. This can only happen if the dislocator is facing up instead of forward._
 
-4) The Robot is randomly moved to somewhere on the working farm
+3) **The Robot is destroying all of the crops that were manually placed.** _Either the resistance or growth stats of the parent crops are too high. By default, anything above 2 resistance or 21 growth is treated like a weed and will be removed. These values, including the maximum stats of child crops, are all easily changed in the config._
 
-_Solution: Check the orientation of the transvector dislocator. This can only happen if the dislocator is facing up instead of forward._
+4) **Crops are randomly dying OR the farms are being overrun with weeds OR there are single crop sticks where there should be double.** _Possibly change location. Crops have minimum environmental stat requirements (nutrients, humidity, air quality) and going below this threshold will kill the crop and leave an empty crop stick behind that is susceptible to growing weeds and overtaking the farms._
 
-3) The Robot is destroying all of the crops that were manually placed
+5) **There is a PKIX path building error when downloading the files from GitHub.** _This is from having outdated java certificates. Try updating your java (to 21), but be prepared to install the files by manually copy-pasting the code from GitHub (only 256 characters can be pasted at a time). The Other Helpful Commands section below can help with that._
 
-_Solution: Either the resistance or growth stats of the parent crops are too high. By default, anything above 2 resistance or 21 growth is treated like a weed and will be removed. These values, including the maximum stats of child crops, are all easily changed in the config._
+6) **There is an "execute_complex" error when downloading the files from GitHub or trying to run autoStat && autoSpread.** _The execute complex refers to using the && operator. Double check that you installed at least Tier 2 memory. Anything less will prevent you from joining commands together. If you do have Tier 2 memory, try adding in a second Tier 2 memory or even upgrading to a higher tier._
 
-4) Crops are randomly dying OR the farms are being overrun with weeds OR there are single crop sticks where there should be double
-
-_Solution: Possibly change location. Crops have minimum environmental stat requirements (nutrients, humidity, air quality) and going below this threshold will kill the crop and leave an empty crop stick behind that is susceptible to growing weeds and overtaking the farms._
-
-5) There is a PKIX path building error when downloading the files from GitHub
-
-_Solution: This is from having outdated java certificates. Try updating your java (to 21), but be prepared to install the files by manually copy-pasting the code from GitHub (only 256 characters can be pasted at a time). The Other Helpful Commands section below can help with that._
-
-6) There is an "execute_complex" error when downloading the files from GitHub or trying to run autoStat && autoSpread
-
-_Solution: The execute complex refers to using the && operator. Double check that you installed at least Tier 2 memory. Anything less will prevent you from joining commands together. If you do have Tier 2 memory, try adding in a second Tier 2 memory or even upgrading to a higher tier._
+7) **The robot crashes when it reaches the crop stick chest.** _This is likely due to a permissions issue with Server Utilities. Enter the "My Team" menu through the button in the top left corner of your inventory and then open up settings. Set the required level for block editing, block interactions, and using items to None._
 
 ## Recommended Crops
 

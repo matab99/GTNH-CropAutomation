@@ -8,7 +8,7 @@ local lowestStat = 0
 local lowestStatSlot = 0
 local targetCrop
 
--- =================== MINOR FUNCTIONS ======================
+-- ===================== FUNCTIONS ======================
 
 local function updateLowest()
     local farm = database.getFarm()

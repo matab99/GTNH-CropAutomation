@@ -8,8 +8,8 @@ local config = {
 
     -- Once complete, remove all extra crop sticks to prevent the working farm from weeding
     cleanUp = true,
-    -- Pickup any and all drops (don't change)
-    keepDrops = true,
+    -- Moves crops to the storage farm, otherwise dumps everything in the storage chest.
+    useStorageFarm = true,
     -- Keep crops that are not the target crop during autoSpread and autoStat
     keepMutations = false,
     -- Stat-up crops during autoTier (Very Slow)
@@ -33,23 +33,23 @@ local config = {
 
     -- Minimum Charge Level
     needChargeLevel = 0.2,
-    -- Max breed round before termination of autoTier.
+    -- Max breeding round before termination of autoSpread or autoTier
     maxBreedRound = 1000,
 
     -- =========== DO NOT CHANGE ===========
 
-    -- The coordinate for charger
+    -- The coordinate for the charger
     chargerPos = {0, 0},
-    -- The coordinate for the container contains crop sticks
+    -- The coordinate for the crop stick container
     stickContainerPos = {-1, 0},
-    -- The coordinate for the container to store seeds, products, etc
+    -- The coordinate for the storage chest / trash can
     storagePos = {-2, 0},
     -- The coordinate for the farmland that the dislocator is facing
     relayFarmlandPos = {1, 1},
     -- The coordinate for the transvector dislocator
     dislocatorPos = {1, 2},
 
-    -- The slot for spade
+    -- The slot for the spade
     spadeSlot = 0,
     -- The slot for the transvector binder
     binderSlot = -1,

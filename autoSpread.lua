@@ -4,10 +4,11 @@ local gps = require('gps')
 local scanner = require('scanner')
 local config = require('config')
 local events = require('events')
+local breedRound = 0
 local emptySlot
 local targetCrop
 
--- =================== MINOR FUNCTIONS ======================
+-- ===================== FUNCTIONS ======================
 
 local function findEmpty()
     local farm = database.getFarm()
@@ -44,9 +45,16 @@ local function checkChild(slot, crop)
 
             -- No parent is empty, put in storage
             elseif stat >= config.autoSpreadThreshold then
-                action.transplant(gps.workingSlotToPos(slot), gps.storageSlotToPos(database.nextStorageSlot()))
-                database.addToStorage(crop)
-                action.placeCropStick(2)
+
+                if config.useStorageFarm then
+                    action.transplant(gps.workingSlotToPos(slot), gps.storageSlotToPos(database.nextStorageSlot()))
+                    database.addToStorage(crop)
+                    action.placeCropStick(2)
+
+                elseif crop.size >= crop.max - 1 then
+                    action.harvest()
+                    action.placeCropStick(2)
+                end
 
             -- Stats are not high enough
             else
@@ -80,6 +88,12 @@ end
 
 local function spreadOnce(firstRun)
     for slot=1, config.workingFarmArea, 1 do
+
+        -- Terminal Condition
+        if breedRound > config.maxBreedRound then
+            print('autoSpread: Max Breeding Round Reached!')
+            return false
+        end
 
         -- Terminal Condition
         if #database.getStorage() >= config.storageFarmArea then
@@ -132,6 +146,7 @@ local function main()
 
     -- Loop
     while spreadOnce(false) do
+        breedRound = breedRound + 1
         action.restockAll()
     end
 
