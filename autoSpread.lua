@@ -116,7 +116,7 @@ local function spreadOnce(firstRun)
         if firstRun then
             database.updateFarm(slot, crop)
             if slot == 1 then
-                targetCrop = database.getFarm()[1].name
+                targetCrop = database.getTarget().name
                 print(string.format('autoSpread: Target %s', targetCrop))
             end
         end

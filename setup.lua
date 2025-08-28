@@ -1,5 +1,5 @@
 local shell = require('shell')
-local args = {...}
+local args = { ... }
 local branch
 local repo
 local scripts = {
@@ -30,6 +30,6 @@ else
 end
 
 -- INSTALL
-for i=1, #scripts do
+for i = 1, #scripts do
     shell.execute(string.format('wget -f %s%s/%s', repo, branch, scripts[i]))
 end

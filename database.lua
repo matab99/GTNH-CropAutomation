@@ -12,6 +12,9 @@ local function getFarm()
     return farm
 end
 
+local function getTarget()
+    return farm[1]
+end
 
 local function updateFarm(slot, crop)
     farm[slot] = crop
@@ -30,7 +33,7 @@ end
 
 
 local function addToStorage(crop)
-    storage[#storage+1] = crop
+    storage[#storage + 1] = crop
     reverseStorage[crop.name] = #storage
 end
 
@@ -51,6 +54,7 @@ end
 
 return {
     getFarm = getFarm,
+    getTarget = getTarget,
     updateFarm = updateFarm,
     getStorage = getStorage,
     resetStorage = resetStorage,

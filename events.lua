@@ -13,7 +13,7 @@ local function keyboardEvent(eventName, keyboardAddress, charNum, codeNum, playe
         self.beep(1000, 1)
         return false -- Unregister this event listener
 
-    -- Exit and cleanup if 'c' was pressed
+        -- Exit and cleanup if 'c' was pressed
     elseif charNum == 99 then
         needExitFlag = true
         needCleanupFlag = true
