@@ -4,11 +4,16 @@ local gps = require('gps')
 local scanner = require('scanner')
 local config = require('config')
 local events = require('events')
-local lowestStat = 0
+local lowestStat = 99
 local lowestStatSlot = 0
 local targetCrop
 
 -- ===================== FUNCTIONS ======================
+
+local function updateFarm(slot, crop)
+    local farm = database.getFarm()
+    farm[slot] = crop
+end
 
 local function updateLowest()
     local farm = database.getFarm()
@@ -41,7 +46,9 @@ local function updateLowest()
 end
 
 
-local function checkChild(slot, crop, firstRun)
+local function processChild(slot, firstRun)
+    gps.go(gps.workingSlotToPos(slot))
+    local crop = scanner.scan()
     if crop.isCrop and crop.name ~= 'emptyCrop' then
         if crop.name == 'air' then
             action.placeCropStick(2)
@@ -74,21 +81,32 @@ local function checkChild(slot, crop, firstRun)
 end
 
 
-local function checkParent(slot, crop, firstRun)
-    if crop.isCrop and crop.name ~= 'air' and crop.name ~= 'emptyCrop' then
-        if scanner.isWeed(crop, 'working') then
-            action.deweed()
-            database.updateFarm(slot, { isCrop = true, name = 'emptyCrop' })
-            if not firstRun then
-                updateLowest()
-            end
-        end
+local function processParent(slot, init)
+    -- Skip slots which haven't been populated
+    local crop = database.getFarm()[slot]
+    if (not init) and (crop == nil) then
+        return
+    end
+
+    -- Relocate to position representing the slot
+    gps.go(gps.workingSlotToPos(slot))
+    crop = scanner.scan()
+
+    -- Update farm slot on initialization
+    if init then
+        updateFarm(slot, crop)
+    end
+
+    -- Deweed parent slot and update farm
+    if scanner.isWeed(crop, 'working') then
+        action.deweed()
+        updateFarm(slot, { isCrop = true, name = 'emptyCrop' })
     end
 end
 
 -- ====================== THE LOOP ======================
 
-local function statOnce(firstRun)
+local function statOnce(init)
     for slot = 1, config.workingFarmArea, 1 do
         -- Terminal Condition
         if #database.getStorage() >= config.storageFarmArea then
@@ -110,22 +128,15 @@ local function statOnce(firstRun)
 
         os.sleep(0)
 
-        -- Scan
-        gps.go(gps.workingSlotToPos(slot))
-        local crop = scanner.scan()
-
-        if firstRun then
-            database.updateFarm(slot, crop)
-            if slot == 1 then
-                targetCrop = database.getTarget().name
-                print(string.format('autoStat: Target %s', targetCrop))
-            end
+        if slot % 2 == 0 then
+            processChild(slot, init)
+        else
+            processParent(slot, init)
         end
 
-        if slot % 2 == 0 then
-            checkChild(slot, crop, firstRun)
-        else
-            checkParent(slot, crop, firstRun)
+        if init and slot == 1 then
+            targetCrop = database.getTarget().name
+            print(string.format('autoStat: Target %s', targetCrop))
         end
 
         if action.needCharge() then

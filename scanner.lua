@@ -57,6 +57,13 @@ local function inspect(slot)
 end
 
 local function isWeed(crop, farm)
+    if (crop == nil) or
+        (not crop.isCrop) or
+        (crop.name == 'air') or
+        (crop.name == 'emptyCrop') then
+        return false
+    end
+
     local maxGrowth = nil
     local maxResistance = nil
     if farm == 'working' then
