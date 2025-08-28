@@ -57,21 +57,22 @@ local function inspect(slot)
 end
 
 local function isWeed(crop, farm)
+    local maxGrowth = nil
+    local maxResistance = nil
     if farm == 'working' then
-        return crop.name == 'weed' or
-            crop.name == 'Grass' or
-            crop.gr > config.workingMaxGrowth or
-            crop.re > config.workingMaxResistance or
-            (crop.name == 'venomilia' and crop.gr > 7)
+        maxGrowth = config.workingMaxGrowth
+        maxResistance = config.workingMaxResistance
     elseif farm == 'storage' then
-        return crop.name == 'weed' or
-            crop.name == 'Grass' or
-            crop.gr > config.storageMaxGrowth or
-            crop.re > config.storageMaxResistance or
-            (crop.name == 'venomilia' and crop.gr > 7)
+        maxGrowth = config.storageMaxGrowth
+        maxResistance = config.storageMaxResistance
     end
-end
 
+    local isIC2Weed = crop.name == 'weed' or crop.name == 'Grass'
+    local isOverGrowth = crop.gr > maxGrowth
+    local isOverResistance = crop.re > maxResistance
+    local isVenomilia = crop.name == 'venomilia' and crop.gr > 7
+    return isIC2Weed or isOverGrowth or isOverResistance or isVenomilia
+end
 
 return {
     scan = scan,

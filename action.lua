@@ -57,7 +57,7 @@ end
 
 local function dumpInventory()
     local selectedSlot = robot.select()
-    local targetCrop = database.getTarget().name
+    local targetCrop = database.getTarget()
     local storages = {
         target = { pos = config.storageTargetPos, slots = {} },
         interim = { pos = config.storageInterimPos, slots = {} },
@@ -65,7 +65,7 @@ local function dumpInventory()
         mixed = { pos = config.storageMixedPos, slots = {} },
     }
 
-    for i = 1, (robot.inventorySize() + config.storageStopSlot) do
+    for i = 1, (robot.inventorySize() + config.storageStopSlot), 1 do
         local item = scanner.inspect(i)
         local storage = nil
 
@@ -73,14 +73,14 @@ local function dumpInventory()
             storage = nil
         elseif not item.isCrop then
             storage = storages.mixed
+        elseif not targetCrop then
+            storage = storages.mutation
         else
             local stat = item.gr + item.ga - item.re
-            local isWeed = scanner.isWeed(item, 'storage')
             local isStatted = stat >= config.autoSpreadThreshold
-            local isTarget = item.name == targetCrop
-            if isWeed then
-                storage = storages.mixed
-            elseif not isTarget then
+            local isTarget = item.name == targetCrop.name
+
+            if not isTarget then
                 storage = storages.mutation
             elseif not isStatted then
                 storage = storages.interim
