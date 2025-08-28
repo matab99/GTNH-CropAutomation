@@ -35,7 +35,7 @@ end
 
 local function restockStick()
     local selectedSlot = robot.select()
-    gps.go(config.stickContainerPos)
+    gps.go(config.storageStickPos)
     robot.select(robot.inventorySize() + config.stickSlot)
 
     for i = 1, inventory_controller.getInventorySize(sides.down) do
@@ -46,6 +46,11 @@ local function restockStick()
         end
     end
 
+    if robot.count() == 0 then
+        print("No IC2 crop sticks stock present! Shutting down...")
+        os.exit()
+    end
+
     robot.select(selectedSlot)
 end
 
@@ -53,28 +58,55 @@ end
 local function dumpInventory()
     local selectedSlot = robot.select()
     local targetCrop = database.getTarget().name
-    gps.go(config.storagePos)
+    local storages = {
+        target = { pos = config.storageTargetPos, slots = {} },
+        interim = { pos = config.storageInterimPos, slots = {} },
+        mutation = { pos = config.storageMutationPos, slots = {} },
+        mixed = { pos = config.storageMixedPos, slots = {} },
+    }
 
     for i = 1, (robot.inventorySize() + config.storageStopSlot) do
-        os.sleep(0)
-
         local item = scanner.inspect(i)
-        local side = sides.down
-        if item ~= nil and item.isCrop then
-            local stat = (item.gr + item.ga - item.re)
+        local storage = nil
+
+        if item == nil then
+            storage = nil
+        elseif not item.isCrop then
+            storage = storages.mixed
+        else
+            local stat = item.gr + item.ga - item.re
             local isWeed = scanner.isWeed(item, 'storage')
-            local isStatted = (stat >= config.autoSpreadThreshold)
-            local isTarget = (item.name == targetCrop)
-            if (not isWeed) and isStatted and isTarget then
-                side = sides.up
+            local isStatted = stat >= config.autoSpreadThreshold
+            local isTarget = item.name == targetCrop
+            if isWeed then
+                storage = storages.mixed
+            elseif not isTarget then
+                storage = storages.mutation
+            elseif not isStatted then
+                storage = storages.interim
+            else
+                storage = storages.target
             end
         end
 
-        robot.select(i)
-        for e = 1, inventory_controller.getInventorySize(side) do
-            if inventory_controller.getStackInSlot(side, e) == nil then
-                inventory_controller.dropIntoSlot(side, e)
-                break
+        if storage ~= nil then
+            storage.slots[#storage.slots + 1] = i
+        end
+    end
+
+    for _, storage in pairs(storages) do
+        if #storage.slots > 0 then
+            gps.go(storage.pos)
+        end
+
+        for _, i in ipairs(storage.slots) do
+            os.sleep(0)
+            robot.select(i)
+            for e = 1, inventory_controller.getInventorySize(sides.down) do
+                if inventory_controller.getStackInSlot(sides.down, e) == nil then
+                    inventory_controller.dropIntoSlot(sides.down, e)
+                    break
+                end
             end
         end
     end

@@ -36,18 +36,22 @@ local config = {
     -- Max breeding round before termination of autoSpread or autoTier
     maxBreedRound = 1000,
 
-    -- =========== DO NOT CHANGE ===========
-
     -- The coordinate for the charger
     chargerPos = { 0, 0 },
-    -- The coordinate for the crop stick container
-    stickContainerPos = { -1, 0 },
-    -- The coordinate for the storage chest / trash can
-    storagePos = { -2, 0 },
-    -- The coordinate for the farmland that the dislocator is facing
+    -- The coordinate for farmland that the dislocator is facing
     relayFarmlandPos = { 1, 1 },
     -- The coordinate for the transvector dislocator
     dislocatorPos = { 1, 2 },
+    -- The coordinate for crop stick storage
+    storageStickPos = { -1, 0 },
+    -- The coordinate for storage for target crop seeds
+    storageTargetPos = { -2, 0 },
+    -- The coordinate for storage for interim crop seeds
+    storageInterimPos = { -2, 0 },
+    -- The coordinate for storage for mutated crop seeds
+    storageMutationPos = { -2, 0 },
+    -- The coordinate for storage for misc/trash items
+    storageMixedPos = { -2, 0 },
 
     -- The slot for the spade
     spadeSlot = 0,
